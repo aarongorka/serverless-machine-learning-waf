@@ -1,0 +1,95 @@
+service: MV-${env:REALM}-Serverless-Machine-Learning-WAF
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${env:ENV}
+  memorySize: 128
+  timeout: 10
+  versionFunctions: false
+  region: ${env:AWS_REGION}
+  variableSyntax: "\\${(?!AWS::)((?:self|env):[ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}"
+  stackTags:
+    FRAMEWORK: serverless
+  environment:
+    ENV: ${env:ENV}
+    LOGLEVEL: ${env:LOGLEVEL}
+    REALM: ${env:REALM}
+
+package:
+  artifact: package/package.zip
+
+plugins:
+  - serverless-log-forwarding
+  - serverless-plugin-aws-alerts
+
+custom:
+  logForwarding:
+    destinationARN: {"Fn::ImportValue": "${env:SUMOLOGIC_LAMBDA_ARN_EXPORT_NAME}"}
+  alerts:
+    dashboards: true
+    topics:
+      ok: ${env:OPS_GENIE_SNS_ARN}
+      alarm: ${env:OPS_GENIE_SNS_ARN}
+      insufficientData: ${env:OPS_GENIE_SNS_ARN}
+    definitions:
+      functionErrors:
+        threshold: 10
+        period: 900
+      functionDuration:
+        threshold: 60000
+        statistic: 'p95'
+        period: 900
+    alarms:
+      - functionErrors
+      - functionThrottles
+      - functionInvocations
+      - functionDuration
+
+functions:
+  handler:
+    handler: serverless_machine_learning_waf.handler
+    events:
+      - http: GET handler
+
+resources:
+  Resources:
+    DomainName:
+      Type: "AWS::ApiGateway::DomainName"
+      Properties:
+        CertificateArn: ${env:AWS_ACM_CERTIFICATE}
+        DomainName: ${env:DOMAIN_NAME}
+    BasePathMapping:
+      Type: "AWS::ApiGateway::BasePathMapping"
+      Properties:
+        BasePath: "serverless-machine-learning-waf"
+        DomainName:
+          Ref: DomainName
+        RestApiId: { "Ref": "ApiGatewayRestApi" }
+        Stage: ${env:ENV}
+    RecordSet:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneName: ${env:AWS_HOSTED_ZONE}.
+        Name: ${env:DOMAIN_NAME}
+        Type: A
+        AliasTarget:
+          HostedZoneId: "Z2FDTNDATAQYW2"
+          DNSName:
+            Fn::GetAtt: [ "DomainName", "DistributionDomainName" ]
+    RecordSetAAAA:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneName: ${env:AWS_HOSTED_ZONE}.
+        Name: ${env:DOMAIN_NAME}
+        Type: AAAA
+        AliasTarget:
+          HostedZoneId: "Z2FDTNDATAQYW2"
+          DNSName:
+            Fn::GetAtt: [ "DomainName", "DistributionDomainName" ]
+  Outputs:
+    LambdaUrl:
+      Value: "https://${env:DOMAIN_NAME}"
+    CloudFrontDomainName:
+      Value:
+        Fn::GetAtt: [ 'DomainName', 'DistributionDomainName' ]
