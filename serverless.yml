@@ -5,22 +5,38 @@ provider:
   runtime: python3.6
   stage: ${env:ENV}
   memorySize: 128
-  timeout: 10
+  timeout: 60
   versionFunctions: false
   region: ${env:AWS_REGION}
   variableSyntax: "\\${(?!AWS::)((?:self|env):[ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: 
+        - "*"
+    - Effect: Allow
+      Action:
+        - machinelearning:*
+      Resource:
+        - "*"
   stackTags:
     FRAMEWORK: serverless
   environment:
     ENV: ${env:ENV}
     LOGLEVEL: ${env:LOGLEVEL}
     REALM: ${env:REALM}
+    SOURCE_BUCKET: ${self:service}-origin
+    TRANSFORMED_BUCKET: ${self:service}-transformed
+    RESULTS_BUCKET: 
+      Ref: ResultsBucket
+    MODEL_ID: ${env:MODEL_ID}
 
 package:
   artifact: package/package.zip
 
 plugins:
-  - serverless-log-forwarding
+#  - serverless-log-forwarding
   - serverless-plugin-aws-alerts
 
 custom:
@@ -47,49 +63,17 @@ custom:
       - functionDuration
 
 functions:
-  handler:
-    handler: serverless_machine_learning_waf.handler
+  transform:
+    handler: serverless_machine_learning_waf.transform
     events:
-      - http: GET handler
+      - s3: ${self:service}-origin
+  predict:
+    handler: serverless_machine_learning_waf.predict
+    events:
+      - s3: ${self:service}-transformed
 
 resources:
   Resources:
-    DomainName:
-      Type: "AWS::ApiGateway::DomainName"
-      Properties:
-        CertificateArn: ${env:AWS_ACM_CERTIFICATE}
-        DomainName: ${env:DOMAIN_NAME}
-    BasePathMapping:
-      Type: "AWS::ApiGateway::BasePathMapping"
-      Properties:
-        BasePath: "serverless-machine-learning-waf"
-        DomainName:
-          Ref: DomainName
-        RestApiId: { "Ref": "ApiGatewayRestApi" }
-        Stage: ${env:ENV}
-    RecordSet:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        HostedZoneName: ${env:AWS_HOSTED_ZONE}.
-        Name: ${env:DOMAIN_NAME}
-        Type: A
-        AliasTarget:
-          HostedZoneId: "Z2FDTNDATAQYW2"
-          DNSName:
-            Fn::GetAtt: [ "DomainName", "DistributionDomainName" ]
-    RecordSetAAAA:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        HostedZoneName: ${env:AWS_HOSTED_ZONE}.
-        Name: ${env:DOMAIN_NAME}
-        Type: AAAA
-        AliasTarget:
-          HostedZoneId: "Z2FDTNDATAQYW2"
-          DNSName:
-            Fn::GetAtt: [ "DomainName", "DistributionDomainName" ]
-  Outputs:
-    LambdaUrl:
-      Value: "https://${env:DOMAIN_NAME}"
-    CloudFrontDomainName:
-      Value:
-        Fn::GetAtt: [ 'DomainName', 'DistributionDomainName' ]
+    ResultsBucket:
+      Type: "AWS::S3::Bucket"
+      Properties: {}

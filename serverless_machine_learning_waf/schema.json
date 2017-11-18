@@ -1,0 +1,124 @@
+{
+  "version" : "1.0",
+  "rowId" : null,
+  "rowWeight" : null,
+  "targetAttributeName" : "is_malicious_bot",
+  "dataFormat" : "CSV",
+  "dataFileContainsHeader" : true,
+  "attributes" : [ {
+    "attributeName" : "ip_address",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "day_of_week",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "hour_of_day",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "minute_of_hour",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "edge",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "response_size",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "http_method",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "cloudfront_host",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "path",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "status_code",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "status_code_group",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "aborted",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "referrer",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "user_agent",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "browser_family",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "browser_version",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "os_family",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "os_version",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "device",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "is_mobile",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "is_tablet",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "is_pc",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "is_touch_capable",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "is_bot",
+    "attributeType" : "BINARY"
+  }, {
+    "attributeName" : "querystring",
+    "attributeType" : "TEXT"
+  }, {
+    "attributeName" : "edge_result_type",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "request_host",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "request_protocol",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "request_size",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "response_duration",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "ssl_protocol",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "ssl_cypher",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "edge_response_result_type",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "country",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "city",
+    "attributeType" : "CATEGORICAL"
+  }, {
+    "attributeName" : "latitude",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "longitude",
+    "attributeType" : "NUMERIC"
+  }, {
+    "attributeName" : "is_malicious_bot",
+    "attributeType" : "BINARY"
+  } ],
+  "excludedAttributeNames" : [ ]
+}

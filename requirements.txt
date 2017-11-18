@@ -1,1 +1,8 @@
 aws_lambda_logging==0.0.20
+requests==2.18.4
+responses
+git+https://github.com/aarongorka/cloudfront-edge-codes.git@fix/new-code-format#egg=cloudfront_edge_codes
+cloudfront-log-parser
+geoip2
+robot_detection
+more_itertools

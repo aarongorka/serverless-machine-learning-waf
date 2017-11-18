@@ -1,0 +1,9 @@
+{
+  "groups" : {
+    "NUMERIC_VARS_QB_50" : "group('request_size','response_size','response_duration','browser_version')",
+    "NUMERIC_VARS_QB_100" : "group('latitude', 'longitude')"
+  },
+  "assignments" : {
+  },
+  "outputs" : [ "ALL_BINARY", "ALL_CATEGORICAL", "day_of_week", "hour_of_day", "minute_of_hour", "status_code", "quantile_bin(NUMERIC_VARS_QB_50,50)", "quantile_bin(NUMERIC_VARS_QB_100,100)", "ALL_TEXT" ]
+}
